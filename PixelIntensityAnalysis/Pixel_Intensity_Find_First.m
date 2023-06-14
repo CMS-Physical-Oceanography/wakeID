@@ -22,7 +22,7 @@ frames = 1:VidData.NumFrames;  %frames to be analyzed
 intensity = zeros(1,length(frames)) ;
 for i = 1:length(frames)
     img = read(VidData,frames(i));
-    img = rgb2gray(img(1285:1591,510:1348,:));
+    img = rgb2gray(img(1240:1452,979:1417,:));
     intensity(i) = mean(img(:));
 end
 %% This code finds and plots the RGB values over the course of the video 
