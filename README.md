@@ -5,5 +5,6 @@ By identfying boat wakes through pressure sensors and cameras. We can work towar
 The code in this repository is outlined to work with raw data in the form of
  - Pressure 
    - Gathered from a sensor deployed in the ICW just off the CMS pier
+     -Code FFTs data and then uses machine learning in order to identify boat wakes automatically. 
  - Pixel Intensity 
    - Gathered from a low cost camera attached to the CMS pier that overlooks the waterway. 
