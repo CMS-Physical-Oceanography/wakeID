@@ -2,12 +2,13 @@
 %WebPath ="https://stage-ams.srv.axds.co/archive/mp4/uncw/cms_dock_south/2022/06/18/cms_dock_south-2022-06-18-105207Z.mp4";
 %options=weboptions; options.CertificateFilename=(''); options.RequestMethod=("Post");
 %VidData = websave(CMS_PIXEl_VIDEO.html,WebPath);
+clear all;
 
-VidPath ="C:\Users\lwlav\Downloads\cms_dock_south-2022-06-18-173443Z.mp4";
+VidPath = "C:\Users\lwlav\Downloads\cms_dock_south-2022-09-23-134837Z.mp4";
 VidData = VideoReader(VidPath);
 
-D1= 'June 18, 2022 13:34:40';      
-D2= 'June 18, 2022 13:39:09';
+D1= 'September 23, 2022 09:48:32';     % Time frame for data to be analyzed 
+D2= 'September 23, 2022 09:58:32';
 
 t1= datenum(D1);
 t2= datenum(D2);
@@ -15,16 +16,16 @@ t2= datenum(D2);
 t1= datetime(t1,'ConvertFrom','datenum');
 t2= datetime(t2,'ConvertFrom','datenum');
 
-T=t1:seconds(0.2):t2; %time in frames
-frames = 1:VidData.NumFrames;  %frames to be analyzed 
-% cd C:/Users/user/my_project
+T=t1:seconds(0.2):t2;  %time in frames
+frames = 1:VidData.NumFrames ; %frames to be analyzed 
 
-intensity = zeros(1,length(frames)) ;
+int = zeros(1,length(frames)) ;
 for i = 1:length(frames)
     img = read(VidData,frames(i));
-    img = rgb2gray(img(1240:1452,979:1417,:));
-    intensity(i) = mean(img(:));
+    img = rgb2gray(img(700:710,500:520,:));
+    int(i) = mean(img(:));
 end
+
 %% This code finds and plots the RGB values over the course of the video 
 %figure,
 %for gg = 1:length(frames)
@@ -39,28 +40,56 @@ end
 %    plot (T(1:VidData.NumFrames),Bmean,'b-')
 %    hold off
 %end
+% figure; hold on; grid on; box on;
+% set(gcf,'position',[279 288 735 295])
+% 
+% plot(T(1:VidData.NumFrames),intensity,'k');
+% title('Pixel Intensity');
+% 
+% xlabel('Time (UTC)'); ylabel('Pixel Intensity');
+% 
+% Gmean = zeros(length(frames),1);
+% for gg = 5:VidData.NumFrames
+%    img = read(VidData,frames(gg));
+%     A = img(677:724,477:497,:);
+%     Gmean(gg) = mean(mean(A(:,:,2)));
+%     if (Gmean(gg)<= Gmean(gg-1)*1.1) && (Gmean(gg)>= Gmean(gg-1)*1.04)
+%        xline(T(gg),'b-',{'Boat Wake'})
+%     elseif Gmean(gg)>=Gmean(gg-1)*1.1
+%            xline(T(gg),'r-',{'Bad Data'})
+%     end
+%     if (Gmean(gg)>= Gmean(gg-1)*.9) && (Gmean(gg)<= Gmean(gg-1)*.96)
+%        xline(T(gg),'b-',{'Boat Wake'})
+%     elseif Gmean(gg)<=Gmean(gg-1)*.9
+%            xline(T(gg),'r-',{'Bad Data'})
+%     end
+% end   
 
-%% Plot Intensity and flag data values by putting a vertical line on 
-% sharp jumps that couldn't be explained by boat wakes 
+%% STFT of a pixel window over a time frame 
+I0= detrend(int);
+T= 25;
+dTs= .5;
+fs=5;
+L= round(T*fs);
+Olap= L-round(dTs*fs);
+fr=0:fs/L:1.5;
 
-figure; hold on; grid on; box on;
-set(gcf,'position',[279 288 735 295])
+[sp ,fp, tfp] = spectrogram(I0,hanning(L),Olap,fr,fs);
 
-plot(T(1:VidData.NumFrames),intensity,'k');
-title('Pixel Intensity');
+Sp = (sp.*conj(sp)/(L*fs));
 
-xlabel('Time (UTC)'); ylabel('Pixel Intensity');
+Rmin = min(Sp(:));
+Rmax = max(Sp(:));
 
-Gmean = zeros(length(frames),1);
-for gg = 2:VidData.NumFrames
-   img = read(VidData,frames(gg));
-    A = img(1285:1591,510:1348,:);
-    Gmean(gg) = mean(mean(A(:,:,2)));
-    if Gmean(gg)>= Gmean(gg-1)*1.05
-       xline(T(gg),'b-',{'Bad Data'})
-    end
-    if Gmean(gg)<= Gmean(gg-1)*.95
-       xline(T(gg),'b-',{'Bad Data'})
-    end
-end
+C = 255-round(((Sp-Rmin)/(Rmax-Rmin)).*255);
+C = uint8(C);
+
+figure,
+imagesc(C); hold on; axis off;
+colormap(bone);
+caxis([0 255])
 hold off
+
+%%
+
+imwrite(C,"C:\Users\lwlav\OneDrive\Documents\MATLAB\Pixel\TrainingImages\pixel_Glitchy2boats_Sept2323.tif","tiff")
