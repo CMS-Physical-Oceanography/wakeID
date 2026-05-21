@@ -3,6 +3,8 @@
 clear all;
 close all;
 
+addpath(genpath('~/OneDriveUNCW/BoatWakes/'))
+
 load ('processed_hatchery_june2022.mat',"time", "P")
 
 D1= 'June 08, 2022 15:00:00';     % Time frame for data to be analyzed 
@@ -33,6 +35,8 @@ for ii= 1:length(Ts)
         imagesc(tfs,f,S); caxis([0 0.0001])
         colormap(flipud(bone))
         set(gca,'ylim',[0 1.5]);
+        ylabel('$f$ [Hz]','interpreter','latex')
+        xlabel('$t$ [s]','interpreter','latex')        
         saveas(gcf,sprintf('2ndFigure%d.fig',ii))
         if ~exist('figVar','var')
             figVar = figure;
@@ -40,5 +44,12 @@ for ii= 1:length(Ts)
         figure(figVar), hold on
         varS = sum(S*(fs/L),1);
         plot(tfs,varS)
-        var(ii) = sum(varS*dTs)
+        ylabel('$f$ [Hz]','interpreter','latex')
+        xlabel('$t$ [s]','interpreter','latex')        
+        var(ii) = sum(varS*dTs);
 end
+legend(cellstr(num2str(Ts')))
+disp('For the window lengths [seconds] tested:')
+disp(Ts)
+disp('The record variences [m^2] were:')
+disp(var)

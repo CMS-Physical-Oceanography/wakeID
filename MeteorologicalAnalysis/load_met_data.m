@@ -12,14 +12,14 @@ data= textscan(fid,'%s %s %f %f %f %f %f %f %f','delimiter',{',','"'},'treatasem
 % create time vector
 WBn       = size(data{1},1);
 WBtString = cat(2,char(data{1}),repmat(' ',WBn,1),char(data{2}));
-WBt       = datenum(tString)-4/24;% GMT to EDT
+WBt       = datenum(WBtString)-4/24;% GMT to EDT
 %
 % get wind speed/direction
 WBwindSpeed = data{3};% knots:
 WBwindDir   = data{4};
 %
-WBwindSpeedmph = 1.15078*windSpeed;% miles per hour
-WBwindSpeedmps = 0.51444*windSpeed;% meters per second
+WBwindSpeedmph = 1.15078*WBwindSpeed;% miles per hour
+WBwindSpeedmps = 0.51444*WBwindSpeed;% meters per second
 %
 %
 % load MBNB-North met data
@@ -31,14 +31,14 @@ data= textscan(fid,'%s %f %s %f %s','headerlines',10,'delimiter',{','});
 %
 % create time vector
 MSNBtString = char(data{1});
-MSNBt       = datenum(tString);% EDT
+MSNBt       = datenum(MSNBtString);% EDT
 %
 % get wind speed/direction
 MSNBwindSpeed = data{2};% knots:
 MSNBwindDir   = data{4};
 %
-MSNBwindSpeedmph = 1.15078*windSpeed;% miles per hour
-MSNBwindSpeedmps = 0.51444*windSpeed;% meters per second
+MSNBwindSpeedmph = 1.15078*MSNBwindSpeed;% miles per hour
+MSNBwindSpeedmps = 0.51444*MSNBwindSpeed;% meters per second
 %
 %
 fig1 = figure;
