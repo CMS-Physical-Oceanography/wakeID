@@ -1,8 +1,8 @@
 %% Final Product of everything
 clear all; close all;
-load("D:\BoatTracking_Fall2022\ICW_survey_20220922\rbr_pressure_CMSsouth_2022.mat") %Load Data
-load("D:\WakeID_Summer2023\imgNet_v4.mat")      %Load Network
-load("D:\WakeID_Summer2023\Met_Data\Winds.mat") % Load Met data
+load("C:\Users\colin\OneDrive - UNC-Wilmington\WakeProjData\Summer2022\ICW_survey_20220922\rbr_pressure_CMSsouth_2022.mat") %Load Data
+load("C:\Users\colin\OneDrive - UNC-Wilmington\WakeProjData\Summer2023\imgNet_v4.mat")      %Load Network
+load("C:\Users\colin\OneDrive - UNC-Wilmington\WakeProjData\Summer2023\Met_Data\Winds.mat") % Load Met data
 
 P=data(2).pres;             % Take data from surface sensor
 T=data(2).time;
