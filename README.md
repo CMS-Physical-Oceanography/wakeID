@@ -16,5 +16,5 @@ The code in this repository is outlined to work with raw data in the form of
  - Pixel Intensity 
    - Gathered from a low cost camera attached to the CMS pier that overlooks the waterway. 
 
-![Alt text](PressureAnalysis/Lavengood-2023-Poster.pdf)
+![Alt text](PressureAnalysis/Lavengood-2023-Poster.png)
 
