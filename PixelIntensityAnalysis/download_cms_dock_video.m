@@ -16,8 +16,8 @@ for ii = 1:length(cmsInds);
     files{ii} = fileList{1}(cmsInds(ii):mp4Inds(ii));
     
 % $$$     % download the first video to your Downloads folder                       
-% $$$     fileOut = ['~/Downloads/',files{1}];                                      
-% $$$     websave(fileOut, [url, files{1}]);  
+% $$$     fileOut = ['~/Downloads/',files{ii}];                                      
+% $$$     websave(fileOut, [url, files{ii}]);  
 end                                   
 
  
