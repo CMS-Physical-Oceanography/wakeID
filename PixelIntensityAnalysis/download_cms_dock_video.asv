@@ -1,0 +1,42 @@
+clear all
+close all
+
+numdays = 10;
+daystart = 5;
+
+baseURL = 'https://stage-ams.srv.axds.co/archive/mp4/uncw/cms_dock_south/2022/10/';
+
+for k = 1:numdays
+
+    dayofmonth = daystart + k - 1;
+
+    downloadsFolder(k) = fullfile('E:\Boatvideos','October',num2str(dayofmonth));
+    
+    % make day folder like 05, 06, 07, etc.
+    dayStr = sprintf('%02d', dayofmonth);
+
+    % define URL for this day
+    url = [baseURL, dayStr, '/'];
+
+    % read HTML page
+    urlData = webread(url);
+
+    % get contents inside <pre>...</pre>
+    fileList = regexp(urlData, '(?<=<pre>).*(?=</pre>)', 'match');
+
+    % find filenames ending in .mp4
+    files = regexp(fileList{1}, 'cms.*?\.mp4', 'match');
+
+    % download every file for this day
+    for ii = 1:length(files)
+
+        fileOut = fullfile(downloadsFolder(k), files{ii});
+        fileURL = [url, files{ii}];
+
+        fprintf('Downloading %s\n', fileURL)
+
+        websave(fileOut, fileURL);
+
+    end
+end
+ 

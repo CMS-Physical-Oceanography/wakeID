@@ -1,5 +1,5 @@
 # WakeID
-This repository contains MATLAB code for identifying and analyzing boat wakes using pressure sesnsors and cameras.
+This repository contains MATLAB code for identifying and analyzing boat wakes using pressure sensors and cameras.
 ## Purpose
 By identfying boat wakes through pressure sensors and cameras. We can work towards creating algorithms that can predict erosion on shorelines due to wake energy with just a simple sensor.
 The code in this repository is outlined to work with raw data in the form of
