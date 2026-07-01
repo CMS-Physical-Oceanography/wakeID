@@ -66,6 +66,10 @@ cap = cv2.VideoCapture(video_path)
 pressure_sensor_east_ft = 2344242.3
 pressure_sensor_north_ft = 143745.445
 
+# Pressure sensor location in full-frame pixel coordinates for saved JPG overlays.
+pressure_sensor_pixel_x = 1200
+pressure_sensor_pixel_y = 750
+
 # Load the MATLAB calibration file that contains matched image and UTM coordinates.
 mat_path = r"C:\Users\colin\OneDrive - UNC-Wilmington\WakeProjData\Summer2022\ICW_survey_20220922\mats\data.mat"
 mat_data = scipy.io.loadmat(mat_path, squeeze_me=True, struct_as_record=False)
@@ -494,11 +498,42 @@ while cap.isOpened():
                     3,
                 )
 
+                # Label the ROI box so saved JPGs clearly show the YOLO detection window.
+                cv2.putText(
+                    annotated_frame,
+                    "AI Boat Detection using YOLO",
+                    (x1, max(30, y1 - 12)),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1.0,
+                    (0, 0, 0),
+                    3,
+                )
+
                 # Draw the vertical crossing x-line inside the ROI.
                 cv2.line(
                     annotated_frame,
                     (int(round(full_line_x)), y1),
                     (int(round(full_line_x)), y2),
+                    (0, 0, 0),
+                    3,
+                )
+
+                # Mark the pressure sensor pixel location with a large black dot.
+                cv2.circle(
+                    annotated_frame,
+                    (pressure_sensor_pixel_x, pressure_sensor_pixel_y),
+                    14,
+                    (0, 0, 0),
+                    -1,
+                )
+
+                # Label the pressure sensor marker on the saved JPG.
+                cv2.putText(
+                    annotated_frame,
+                    "Pressure Sensor",
+                    (pressure_sensor_pixel_x + 18, pressure_sensor_pixel_y + 8),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1.0,
                     (0, 0, 0),
                     3,
                 )
