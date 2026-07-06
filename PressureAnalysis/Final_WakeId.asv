@@ -15,7 +15,7 @@ T=data(2).time;                   % MATLAB serial-date pressure timestamps
 clear data                        % Remove the larger source structure from memory
 
 %% 2. REMOVE THE MEAN AND LOW-FREQUENCY PRESSURE TREND
-fs = 16;                       % Pressure sampling frequency [Hz]
+fs = 16.66;                       % Pressure sampling frequency [Hz]
 Pmean = mean(P);                  % Mean pressure over the full deployment
 F= hanning(round(32*fs));         % 32-second Hann smoothing window
 F=F./sum(F);                      % Normalize the smoothing window
@@ -70,34 +70,12 @@ for ii = 1:2
     t1 = T(1+N*(ii-1):N*ii);  % Timestamps in the current segment
     P1 = P0(1+N*(ii-1):N*ii); % Perturbation pressure in current segment
 
-    % SPECTROGRAM INPUTS (what MATLAB is given):
-    % P1            = the piece of pressure data we want to examine.
-    % hamming(L)    = a smooth window containing L samples. MATLAB places
-    %                 this window over P1 and examines one small piece at a time.
-    % Olap          = how many samples each window shares with the previous
-    %                 window. More overlap makes the windows move in smaller steps.
-    % 0:fs/L:1.5   = the frequencies MATLAB should examine: starting at 0 Hz,
-    %                 moving in steps of fs/L Hz, and stopping at 1.5 Hz.
-    % fs            = the number of pressure samples collected each second [Hz].
-    % "yaxis"       = tells MATLAB to treat frequency as the vertical direction
-    %                 when it displays the spectrogram.
-    % 'psd'         = asks MATLAB to calculate power spectral density.
-    %
-    % SPECTROGRAM OUTPUTS (what MATLAB gives back):
-    % s             = the complex Fourier-transform values. These contain the
-    %                 size and phase of each frequency at each moment in time.
-    % f             = the frequency belonging to each row of s and S [Hz].
-    % tfs           = the time belonging to each column of s and S [seconds
-    %                 from the beginning of P1].
-    % S             = the power spectral density. It says how much pressure
-    %                 variation exists at each frequency and time [m^2/Hz,
-    %                 assuming P1 is measured in meters].
-    %
-    % Think of S as an image: rows are frequencies, columns are times, and
-    % brighter/stronger pixel values mean more pressure-wave power.
-    [s,f,tfs,S]=spectrogram(P1,hamming(L),Olap,0:fs/L:1.5,fs,"yaxis",'psd');
+    % Create a 0-1.5 Hz power spectral-density spectrogram. Columns are
+    % time bins and rows are frequency bins.
+    [s,f,tfs]=spectrogram(P1,hamming(L),Olap,0:fs/L:1.5,fs,"yaxis",'psd');
     Nf = length(f);             % Number of frequency bins/image rows
     Nt = length(tfs);           % Number of time bins/image columns
+    S = (s.*conj(s)/(L*fs));    % Spectral power used for energy calculations
 
     % Scale spectral power to the 8-bit grayscale image expected by imgNet.
     C = 255 - round(((S-0)/(.00001-0)).*255);
