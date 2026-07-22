@@ -1,6 +1,6 @@
 %% MANUALLY CREATE WAKE LABELS FROM THE GENERATED TRAINING IMAGES
 % This is an updated version of Ntwrk_Trainer.m for the images produced by
-% imgnettrainer.m.
+% GetTrainingimages.m.
 %
 % Workflow:
 %   1. Randomly choose 300 images that do not already have saved labels.
@@ -16,7 +16,7 @@ clear; close all; clc;
 
 
 %% 1. LOCATE THE IMAGES CREATED BY IMGNETTRAINER
-scriptFolder = fileparts(mfilename("fullpath"));
+scriptFolder = "C:\Users\cls7049\OneDrive - UNC-Wilmington\WakeProjData\Summer2026";
 trainingDataFolder = fullfile(scriptFolder,"SpectrogramTrainingData");
 trainingImageFolder = fullfile(trainingDataFolder,"TrainingImages");
 trainingLabelFolder = fullfile(trainingDataFolder,"TrainingLabels");
