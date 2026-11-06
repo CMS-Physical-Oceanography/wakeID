@@ -1,29 +1,31 @@
 % Pull Data for Analysis
 clear all
 
-load ('processed_hatchery_june2022.mat',"time", "P")
+load ('/Users/derekgrimes/Library/CloudStorage/OneDrive-UNC-Wilmington/BoatWakes/Summer2022/210871_20221018_0917.mat')%processed_hatchery_june2022.mat',"time", "P")
+time = t;
+P = p;
 
 % Plot a chart of pressue against time
 
-D1= 'June 08, 2022 15:34:00';     % Time frame for data to be analyzed 
-D2= 'June 08, 2022 15:35:00';
+D1= '25-Sep-2022 14:34:00';%'June 08, 2022 15:34:00';     % Time frame for data to be analyzed 
+D2= '25-Sep-2022 14:35:00';%'June 08, 2022 15:35:00';
 
 t1= datenum(D1);
 t2= datenum(D2);
 
 T=[t1,t2];
 
-figure,
-plot (time,P,'-')
-xlabel("time")
-ylabel("Pressure")
-title('Pressure vs Time for 1 wake')
-set(gca,'xlim',T, 'xtick',t1:1/24/60/10:t2 )
-datetick(gca,'x','mm/dd HH:MM:SS', 'keeplimits','keepticks')
+% $$$ figure,
+% $$$ plot (time,P,'-')
+% $$$ xlabel("time")
+% $$$ ylabel("Pressure")
+% $$$ title('Pressure vs Time for 1 wake')
+% $$$ set(gca,'xlim',T, 'xtick',t1:1/24/60/10:t2 )
+% $$$ datetick(gca,'x','mm/dd HH:MM:SS', 'keeplimits','keepticks')
 
 % Find Frequency Ranges
 
-ind = find(time>=t1&time<=t2+1/16/86400);
+ind = find(time>=t1&time<=t2+1.5/16/86400);
 time0 = time(ind);
 P0 = P(ind);
 
@@ -34,11 +36,11 @@ fr=0:fs/N:3;
 P1= detrend(P0);
 sigp1 = var(P1);
 w = hann(N);
-P2 = w'.*P1;
+P2 = w.*P1;
 sigp2 = var(P2);
 P3 = P2*sqrt(sigp1/sigp2);
 
-[Ys,f,t] = spectrogram(P3,hann(N,"symmetric"),.5*N,fr,fs,"power", "xaxis");
+[Ys,f,t,S] = spectrogram(P3,hann(N,"symmetric"),.5*N,fr,fs,"psd", "xaxis");
 
 Yp = fft(P1)/N; 
 Yw = (fft(P3))/N;
@@ -51,8 +53,8 @@ else
 end
 
 Yp = detrend(Yp) ;
-Yw = detrend (Yw) ;
-Ys = detrend (Ys) ;
+Yw = detrend(Yw) ;
+Ys = detrend(Ys) ;
 
 % generate the figure and axes
 Spp = Yp.*conj(Yp)/dfp;
@@ -78,29 +80,31 @@ hold off
 %%
 %-----------------Redo Process with 5 times the sample size------------
 
-D1= 'June 08, 2022 13:17:30';     % Time frame for data to be analyzed 
-D2= 'June 08, 2022 13:22:30';
+% $$$ D1= %'June 08, 2022 13:17:30';     % Time frame for data to be analyzed 
+% $$$ D2= %'June 08, 2022 13:22:30';
+D1= '25-Sep-2022 14:17:30';%'June 08, 2022 15:34:00';     % Time frame for data to be analyzed 
+D2= '25-Sep-2022 14:22:30';%'June 08, 2022 15:35:00';
 
 t1= datenum(D1);
 t2= datenum(D2);
 
 T=[t1,t2];
 
-figure,
-plot (time,P,'-')
-xlabel("time")
-ylabel("Pressure")
-title('5 minute Pressure vs Time')
-set(gca,'xlim',T, 'xtick',t1:1/24/60/10:t2 )
-datetick(gca,'x','mm/dd HH:MM:SS', 'keeplimits','keepticks')
+% $$$ figure,
+% $$$ plot (time,P,'-')
+% $$$ xlabel("time")
+% $$$ ylabel("Pressure")
+% $$$ title('5 minute Pressure vs Time')
+% $$$ set(gca,'xlim',T, 'xtick',t1:1/24/60/10:t2 )
+% $$$ datetick(gca,'x','mm/dd HH:MM:SS', 'keeplimits','keepticks')
 
-ind = find(time>=t1-4/16/86400 & time<=t2+7/16/86400);
+ind = find(time>=t1-4/16/86400 & time<=t2+5.5/16/86400);
 time0 = time(ind);
 P0 = P(ind);
 
 fs= 16.66;  
 N = length(P0);
-L = 5;
+L = 32;
 Olap = 1;
 fr = 0:fs/N:3;
 
